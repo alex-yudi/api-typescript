@@ -4,7 +4,8 @@
   "description": "Projeto de API desenvolvido em Typescript - Uso de Jest para testes - Uso de Express para servidor - Uso do JWT e Bcrypt para criptografia e autenticação - Uso do Knex para integração com Banco de dados SQL",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon ./src/index.ts"
+    "dev": "nodemon ./src/index.ts",
+    "test": "NODE_ENV=test& jest --runInBand"
   },
   "keywords": [],
   "author": "",

@@ -1,16 +1,13 @@
 import express from 'express';
 import dotenv from 'dotenv';
+
 import knex from './services/connection'
+import routes from './routes/router'
 
 dotenv.config();
 
 const app = express();
 
-app.get('/', async (req, res) => {
-
-    const response = await knex('usuarios')
-    console.log(response)
-    return res.send('ok')
-})
+app.use(routes);
 
 app.listen(process.env.PORT)
