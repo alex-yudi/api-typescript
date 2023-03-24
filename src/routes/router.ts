@@ -1,15 +1,10 @@
 require('dotenv').config();
 import express from "express";
-import knex from "../services/connection";
+import { signUpUser } from "../controllers/users";
 
 const routes = express();
 routes.use(express.json())
 
-routes.get('/', async (req, res) => {
-    const response = await knex('usuarios');
-
-
-    return res.json(response)
-})
+routes.post('/usuario', signUpUser)
 
 export default routes;
