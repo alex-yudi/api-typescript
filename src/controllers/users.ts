@@ -1,6 +1,9 @@
 import { Request, Response } from 'express'
 import knex from "../services/connection";
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import authToken from '../services/authToken';
+
 
 export const signUpUser = async (req: Request, res: Response) => {
     const { nome: name, email, senha: password } = req.body;
@@ -47,5 +50,37 @@ export const signUpUser = async (req: Request, res: Response) => {
         return res.status(201).json(userCreated)
     } catch (error: any) {
         return res.status(400).json(error.message)
+    }
+}
+
+export const signInUser = async (req: Request, res: Response) => {
+    const { email, senha: password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Os campos e-mail e senha são obrigatórios!' })
+    }
+
+    try {
+        const [locatedUser] = await knex('usuarios').where({ email })
+        if (!locatedUser) {
+            return res.status(400).json({ message: 'E-mail ou senha incorreto!' })
+        }
+
+        const comparePasswords = await bcrypt.compare(password, locatedUser.senha)
+        if (!comparePasswords) {
+            return res.status(400).json({ message: 'E-mail ou senha incorreto!' })
+        }
+
+        const token = await jwt.sign({ id: locatedUser.id }, authToken, { expiresIn: '8h' });
+
+        const { senha: __, ...userLogged } = locatedUser;
+
+        const responseWillSend = {
+            user: userLogged,
+            token
+        }
+        return res.status(200).json(responseWillSend)
+    } catch (error: any) {
+        return res.status(500).json({ message: error.message })
     }
 }
