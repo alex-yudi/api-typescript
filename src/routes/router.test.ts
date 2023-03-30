@@ -36,6 +36,12 @@ describe('Should test the endpoints', () => {
         senha: '123456789'
     }
 
+    const contactData = {
+        nome: 'Contato teste',
+        email: 'contato@teste.com',
+        telefone: '(84)12345-6789'
+    }
+
     describe('Test of the sign-up user endpoint', () => {
 
         it('Should show message that missing the fields of e-mail and password', async () => {
@@ -139,6 +145,25 @@ describe('Should test the endpoints', () => {
 
     })
 
+    describe('Test of register a contact endpoint', () => {
+
+        it('Should return a error of missing fields', async () => {
+            const missingFields = await request(app)
+                .post('/contatos')
+                .send({ nome: contactData.nome })
+
+            expect(missingFields.body.message).toBe('Os campos de nome, e-mail e telefone são obrigatórios!')
+        })
+
+        it('Should return the status 201 of the new contact registered', async () => {
+            const newContact = await request(app)
+                .post('/contatos')
+                .send({ ...contactData })
+
+            expect(newContact.body.status).toBe(201)
+        })
+
+    })
 
     afterAll(async () => {
 

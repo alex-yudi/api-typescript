@@ -74,7 +74,6 @@ export const signInUser = async (req: Request, res: Response) => {
         const token = await jwt.sign({ id: locatedUser.id }, authToken, { expiresIn: '8h' });
 
         const { senha: __, ...userLogged } = locatedUser;
-
         const responseWillSend = {
             user: userLogged,
             token
