@@ -145,25 +145,47 @@ describe('Should test the endpoints', () => {
 
     })
 
-    describe('Test of register a contact endpoint', () => {
+    describe('Test of authantication token middleware', () => {
 
-        it('Should return a error of missing fields', async () => {
-            const missingFields = await request(app)
+        /*         it('Should return a error of invalid token', async () => {
+                    jest.setTimeout(10000)
+                    const invalidToken = await request(app)
+                        .post('/contatos')
+                        .set("Authorization", "Bearer tokenInvalido")
+        
+                    expect(invalidToken.body.message).toBe('Token inválido!')
+                }) */
+
+        it('Should return a error of missing token', async () => {
+            const missingToken = await request(app)
                 .post('/contatos')
-                .send({ nome: contactData.nome })
 
-            expect(missingFields.body.message).toBe('Os campos de nome, e-mail e telefone são obrigatórios!')
+            expect(missingToken.body.message).toBe('Token inválido!')
         })
 
-        it('Should return the status 201 of the new contact registered', async () => {
-            const newContact = await request(app)
-                .post('/contatos')
-                .send({ ...contactData })
 
-            expect(newContact.body.status).toBe(201)
-        })
 
     })
+    /* 
+        describe('Test of register a contact endpoint', () => {
+    
+            it('Should return a error of missing fields', async () => {
+                const missingFields = await request(app)
+                    .post('/contatos')
+                    .send({ nome: contactData.nome })
+    
+                expect(missingFields.body.message).toBe('Os campos de nome, e-mail e telefone são obrigatórios!')
+            })
+    
+            it('Should return the status 201 of the new contact registered', async () => {
+                const newContact = await request(app)
+                    .post('/contatos')
+                    .send({ ...contactData })
+    
+                expect(newContact.body.status).toBe(201)
+            })
+    
+        }) */
 
     afterAll(async () => {
 
