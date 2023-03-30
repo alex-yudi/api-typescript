@@ -33,7 +33,8 @@ describe('Should test the endpoints', () => {
     const userData = {
         nome: "Teste",
         email: "teste@teste.com",
-        senha: '123456789'
+        senha: '123456789',
+        token: ''
     }
 
     const contactData = {
@@ -141,20 +142,21 @@ describe('Should test the endpoints', () => {
 
             expect(loginCorrect.body).toHaveProperty('user');
             expect(loginCorrect.body).toHaveProperty('token');
+            userData.token = loginCorrect.body.token
         })
 
     })
 
-    describe('Test of authantication token middleware', () => {
+    describe('Test of authentication token middleware', () => {
 
-        /*         it('Should return a error of invalid token', async () => {
-                    jest.setTimeout(10000)
-                    const invalidToken = await request(app)
-                        .post('/contatos')
-                        .set("Authorization", "Bearer tokenInvalido")
-        
-                    expect(invalidToken.body.message).toBe('Token inválido!')
-                }) */
+        /*       it('Should return a error of invalid token', async () => {
+                  jest.setTimeout(10000)
+                  const invalidToken = await request(app)
+                      .post('/contatos')
+                      .set("Authorization", "Bearer tokenInvalido")
+      
+                  expect(invalidToken.body.message).toBe('Token inválido!')
+              }) */
 
         it('Should return a error of missing token', async () => {
             const missingToken = await request(app)
@@ -166,26 +168,49 @@ describe('Should test the endpoints', () => {
 
 
     })
-    /* 
-        describe('Test of register a contact endpoint', () => {
-    
-            it('Should return a error of missing fields', async () => {
-                const missingFields = await request(app)
-                    .post('/contatos')
-                    .send({ nome: contactData.nome })
-    
-                expect(missingFields.body.message).toBe('Os campos de nome, e-mail e telefone são obrigatórios!')
-            })
-    
-            it('Should return the status 201 of the new contact registered', async () => {
-                const newContact = await request(app)
-                    .post('/contatos')
-                    .send({ ...contactData })
-    
-                expect(newContact.body.status).toBe(201)
-            })
-    
-        }) */
+
+    describe('Test of register a contact endpoint', () => {
+
+        it('Should return a error of missing fields', async () => {
+            const missingFields = await request(app)
+                .post('/contatos')
+                .auth(userData.token, { type: 'bearer' })
+
+
+            expect(missingFields.body.message).toBe('Os campos de nome, e-mail e telefone são obrigatórios!')
+        })
+
+
+        it('Should return the status 201 of the new contact registered', async () => {
+            const newContact = await request(app)
+                .post('/contatos')
+                .auth(userData.token, { type: 'bearer' })
+                .send({ ...contactData })
+
+            expect(newContact.status).toBe(201)
+        })
+
+        it('Should return a error of trying register duplicated email', async () => {
+            const contactWithDuplicatedEmail = await request(app)
+                .post('/contatos')
+                .auth(userData.token, { type: 'bearer' })
+                .send({ ...contactData })
+
+            expect(contactWithDuplicatedEmail.body.message).toBe('Não é permitido o cadastro de e-mails repetidos!')
+        })
+
+
+        it('Should return a error of trying register duplicated telephone', async () => {
+            const contactWithDuplicatedEmail = await request(app)
+                .post('/contatos')
+                .auth(userData.token, { type: 'bearer' })
+                .send({ ...contactData, email: 'outroEmail@email.com' })
+
+            expect(contactWithDuplicatedEmail.body.message).toBe('Não é permitido o cadastro de números repetidos!')
+        })
+
+
+    })
 
     afterAll(async () => {
 

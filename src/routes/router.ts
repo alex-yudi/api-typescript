@@ -11,6 +11,6 @@ routes.post('/usuario', signUpUser);
 routes.post('/login', signInUser);
 
 routes.use(userAuthentication)
-routes.post('/usuarios', registerContact)
+routes.post('/contatos', registerContact)
 
 export default routes;

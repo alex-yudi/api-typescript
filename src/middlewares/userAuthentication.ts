@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import authToken from '../services/authToken'
 
-interface RequestUser extends Request {
+export interface RequestUser extends Request {
     user?: {
         userLoggedId: number;
     }
