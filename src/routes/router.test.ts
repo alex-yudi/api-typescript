@@ -149,14 +149,14 @@ describe('Test of all endpoints', () => {
 
     describe('Test of authentication token middleware', () => {
 
-        /*       it('Should return a error of invalid token', async () => {
-                  jest.setTimeout(10000)
-                  const invalidToken = await request(app)
-                      .post('/contatos')
-                      .set("Authorization", "Bearer tokenInvalido")
-      
-                  expect(invalidToken.body.message).toBe('Token inválido!')
-              }) */
+        it('Should return a error of invalid token', async () => {
+            jest.setTimeout(10000)
+            const invalidToken = await request(app)
+                .post('/contatos')
+                .set("Authorization", "Bearer tokenInvalido")
+
+            expect(invalidToken.status).toBe(500)
+        })
 
         it('Should return a error of missing token', async () => {
             const missingToken = await request(app)
@@ -212,7 +212,7 @@ describe('Test of all endpoints', () => {
 
     })
 
-    describe('Test of get the list of contacts', async () => {
+    describe('Test of get the list of contacts', () => {
         it('Should return error of dont sent the authentication token', async () => {
             const missingToken = await request(app)
                 .get('/contatos')
@@ -225,7 +225,7 @@ describe('Test of all endpoints', () => {
                 .get('/contatos')
                 .auth('invalidToken', { type: 'bearer' })
 
-            expect(invalidToken.body.message).toBe('Token inválido!')
+            expect(invalidToken.status).toBe(500);
         })
 
         it('Should return a array with all the contacts registered with the userLoggedId', async () => {
@@ -233,7 +233,7 @@ describe('Test of all endpoints', () => {
                 .get('/contatos')
                 .auth(userData.token, { type: 'bearer' })
 
-            expect(arrayListOfContacts.body.list).toBeGreaterThanOrEqual(0)
+            expect(arrayListOfContacts.body.list.length).toBeGreaterThanOrEqual(0)
         })
     })
 

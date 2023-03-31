@@ -32,6 +32,8 @@ export const userAuthentication = async (req: RequestUser, res: Response, next: 
         if (error.message === 'invalid token') {
             return res.status(401).json({ message: "Token inválido!" })
         }
+
+        return res.status(500).json('Token fornecido gerando erro inesperado do servidor.')
     }
 
 }

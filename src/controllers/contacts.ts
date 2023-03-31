@@ -39,5 +39,15 @@ export const registerContact = async (req: RequestUser, res: Response) => {
 }
 
 export const getListOfContacts = async (req: RequestUser, res: Response) => {
+    if (req.user) {
 
+        const { userLoggedId } = req.user
+        try {
+            const listOfcontacts = await knex('contatos').where({ id_usuario: userLoggedId })
+
+            return res.status(200).json({ list: [...listOfcontacts] })
+        } catch (error: any) {
+            return res.status(400).json({ message: error.message })
+        }
+    }
 }
