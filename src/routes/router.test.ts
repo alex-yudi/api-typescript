@@ -2,7 +2,7 @@ import knex from '../services/connection'
 import request from 'supertest';
 import app from '../app';
 
-describe('Should test the endpoints', () => {
+describe('Test of all endpoints', () => {
 
     beforeAll(async () => { // Criando acesso para BD de testes
         await knex.raw(`
@@ -190,7 +190,7 @@ describe('Should test the endpoints', () => {
             expect(newContact.status).toBe(201)
         })
 
-        it('Should return a error of trying register duplicated email', async () => {
+        it('Should return error of trying register duplicated email', async () => {
             const contactWithDuplicatedEmail = await request(app)
                 .post('/contatos')
                 .auth(userData.token, { type: 'bearer' })
@@ -200,7 +200,7 @@ describe('Should test the endpoints', () => {
         })
 
 
-        it('Should return a error of trying register duplicated telephone', async () => {
+        it('Should return error of trying register duplicated telephone', async () => {
             const contactWithDuplicatedEmail = await request(app)
                 .post('/contatos')
                 .auth(userData.token, { type: 'bearer' })
@@ -211,6 +211,33 @@ describe('Should test the endpoints', () => {
 
 
     })
+
+    describe('Test of get the list of contacts', async () => {
+        it('Should return error of dont sent the authentication token', async () => {
+            const missingToken = await request(app)
+                .get('/contatos')
+
+            expect(missingToken.body.message).toBe('Token inválido!')
+        })
+
+        it('Should return error of invalid authentication token', async () => {
+            const invalidToken = await request(app)
+                .get('/contatos')
+                .auth('invalidToken', { type: 'bearer' })
+
+            expect(invalidToken.body.message).toBe('Token inválido!')
+        })
+
+        it('Should return a array with all the contacts registered with the userLoggedId', async () => {
+            const arrayListOfContacts = await request(app)
+                .get('/contatos')
+                .auth(userData.token, { type: 'bearer' })
+
+            expect(arrayListOfContacts.body.list).toBeGreaterThanOrEqual(0)
+        })
+    })
+
+
 
     afterAll(async () => {
 

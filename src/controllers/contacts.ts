@@ -37,3 +37,7 @@ export const registerContact = async (req: RequestUser, res: Response) => {
         return res.status(500).json({ message: "Erro interno do servidor." })
     }
 }
+
+export const getListOfContacts = async (req: RequestUser, res: Response) => {
+
+}

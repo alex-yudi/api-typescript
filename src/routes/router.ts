@@ -1,6 +1,6 @@
 require('dotenv').config();
 import express from "express";
-import { registerContact } from "../controllers/contacts";
+import { registerContact, getListOfContacts } from "../controllers/contacts";
 import { signUpUser, signInUser } from "../controllers/users";
 import { userAuthentication } from "../middlewares/userAuthentication";
 
@@ -11,6 +11,7 @@ routes.post('/usuario', signUpUser);
 routes.post('/login', signInUser);
 
 routes.use(userAuthentication)
-routes.post('/contatos', registerContact)
+routes.post('/contatos', registerContact);
+routes.get('/contatos', getListOfContacts)
 
 export default routes;
