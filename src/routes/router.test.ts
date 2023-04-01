@@ -201,12 +201,12 @@ describe('Test of all endpoints', () => {
 
 
         it('Should return error of trying register duplicated telephone', async () => {
-            const contactWithDuplicatedEmail = await request(app)
+            const contactWithDuplicatedTelephone = await request(app)
                 .post('/contatos')
                 .auth(userData.token, { type: 'bearer' })
-                .send({ ...contactData, email: 'outroEmail@email.com' })
+                .send({ ...contactData, email: 'outroemail@email.com' })
 
-            expect(contactWithDuplicatedEmail.body.message).toBe('Não é permitido o cadastro de números repetidos!')
+            expect(contactWithDuplicatedTelephone.body.message).toBe('Não é permitido o cadastro de telefones repetidos!')
         })
 
 
@@ -234,6 +234,37 @@ describe('Test of all endpoints', () => {
                 .auth(userData.token, { type: 'bearer' })
 
             expect(arrayListOfContacts.body.list.length).toBeGreaterThanOrEqual(0)
+        })
+    })
+
+    describe('Test of modificate a contact registered', () => {
+        it('Should return a error of contact not found', async () => {
+            const idInvalidContact = 2;
+            const contactNotFound = await request(app)
+                .put(`/contatos/${idInvalidContact}`)
+                .auth(userData.token, { type: 'bearer' })
+                .send({ ...contactData, email: 'outroEmail@email.com' })
+
+            expect(contactNotFound.body.message).toBe('Contato não localizado!')
+        })
+
+        it('Should return a error of missing fields to modificate', async () => {
+            const idContactValid = 1;
+            const missingFields = await request(app)
+                .put(`/contatos/${idContactValid}`)
+                .auth(userData.token, { type: 'bearer' })
+
+            expect(missingFields.body.message).toBe('É necessário informar algum campo para a alteração!')
+        })
+
+        it('Should return a message with the name of contact modified', async () => {
+            const idContactValid = 1;
+            const newContactName = await request(app)
+                .put(`/contatos/${idContactValid}`)
+                .auth(userData.token, { type: 'bearer' })
+                .send({ nome: 'NovoNome' })
+
+            expect(newContactName.body.nome).toBe('NovoNome')
         })
     })
 

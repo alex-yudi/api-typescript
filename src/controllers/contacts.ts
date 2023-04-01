@@ -31,7 +31,7 @@ export const registerContact = async (req: RequestUser, res: Response) => {
             return res.status(400).json({ message: "Não é permitido o cadastro de e-mails repetidos!" })
         }
         if (error.constraint === "contatos_telefone_key") {
-            return res.status(400).json({ message: "Não é permitido o cadastro de números repetidos!" })
+            return res.status(400).json({ message: "Não é permitido o cadastro de telefones repetidos!" })
         }
 
         return res.status(500).json({ message: "Erro interno do servidor." })
