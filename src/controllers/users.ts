@@ -66,12 +66,12 @@ export const signInUser = async (req: Request, res: Response) => {
     try {
         const [locatedUser] = await knex('usuarios').where({ email })
         if (!locatedUser) {
-            return res.status(400).json({ message: 'E-mail ou senha incorreto!' })
+            return res.status(401).json({ message: 'E-mail ou senha incorreto!' })
         }
 
         const comparePasswords = await bcrypt.compare(password, locatedUser.senha)
         if (!comparePasswords) {
-            return res.status(400).json({ message: 'E-mail ou senha incorreto!' })
+            return res.status(401).json({ message: 'E-mail ou senha incorreto!' })
         }
 
         const token = await jwt.sign({ id: locatedUser.id }, authToken, { expiresIn: '8h' });

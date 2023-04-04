@@ -28,10 +28,10 @@ export const registerContact = async (req: RequestUser, res: Response) => {
         return res.status(201).json();
     } catch (error: any) {
         if (error.constraint === "contatos_email_key") {
-            return res.status(400).json({ message: "Não é permitido o cadastro de e-mails repetidos!" })
+            return res.status(409).json({ message: "Não é permitido o cadastro de e-mails repetidos!" })
         }
         if (error.constraint === "contatos_telefone_key") {
-            return res.status(400).json({ message: "Não é permitido o cadastro de telefones repetidos!" })
+            return res.status(409).json({ message: "Não é permitido o cadastro de telefones repetidos!" })
         }
 
         return res.status(500).json({ message: "Erro interno do servidor." })
@@ -80,7 +80,7 @@ export const updateContact = async (req: RequestUser, res: Response) => {
             })
 
             if (!isFieldValid) {
-                return res.status(400).json({ message: 'Um ou todos os campos informados são inválidos!' })
+                return res.status(406).json({ message: 'Um ou todos os campos informados são inválidos!' })
             }
 
             const dataToBeSend = {

@@ -5,7 +5,6 @@ import { signUpUser, signInUser } from "../controllers/users";
 import { userAuthentication } from "../middlewares/userAuthentication";
 
 const routes = express();
-routes.use(express.json())
 
 routes.post('/usuario', signUpUser);
 routes.post('/login', signInUser);
