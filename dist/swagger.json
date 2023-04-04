@@ -1,0 +1,289 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API para utilizar como agenda de contatos.",
+        "description": "Essa API permite ao usuário possuir uma lista de contatos, sendo necessário fazer o cadastro do nome, e-mail e telefone para salvar a informação.",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/usuario": {
+            "post": {
+                "summary": "Cadastro de usuário",
+                "description": "Essa rota fará o cadastro de um novo usuário dentro do Banco de Dados da API.",
+                "tags": [
+                    "Usuário"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            },
+                            "examples": {
+                                "usuário": {
+                                    "value": {
+                                        "nome": "Exemplonildo",
+                                        "email": "exemplo@email.com",
+                                        "senha": "exemploSenha"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Algum dos campos obrigatórios não foi preenchido."
+                    },
+                    "409": {
+                        "description": "Usuário já cadastrado no sistema."
+                    },
+                    "201": {
+                        "description": "Usuário criado."
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "summary": "Login de usuário",
+                "description": "Essa rota fará o login usuário no sistema.",
+                "tags": [
+                    "Usuário"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserLogin"
+                            },
+                            "examples": {
+                                "usuário": {
+                                    "value": {
+                                        "email": "exemplo@email.com",
+                                        "senha": "exemploSenha"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Algum dos campos obrigatórios não foi preenchido."
+                    },
+                    "401": {
+                        "description": "E-mail ou senha incorreto."
+                    },
+                    "200": {
+                        "description": "Usuário logado com sucesso. OBS.: SERÁ NECESSÁRIO UTILIZAR O TOKEN DA RESPOSTA PARA O ACESSO ÀS ROTAS DE CONTATOS."
+                    }
+                }
+            }
+        },
+        "/contatos": {
+            "post": {
+                "summary": "Cadastro de contato",
+                "description": "Essa rota fará o cadastro de um novo contato dentro da agenda do usuário logado.",
+                "tags": [
+                    "Contatos"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Contact"
+                            },
+                            "examples": {
+                                "contato": {
+                                    "value": {
+                                        "nome": "Fulado",
+                                        "email": "detal@email.com",
+                                        "telefone": "(12) 3456-7890"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Algum dos campos obrigatórios não foi preenchido."
+                    },
+                    "401": {
+                        "description": "Token inválido"
+                    },
+                    "409": {
+                        "description": "Contato já cadastrado no sistema."
+                    },
+                    "201": {
+                        "description": "Contato cadastrado."
+                    }
+                }
+            },
+            "get": {
+                "summary": "Listar contatos cadastrados",
+                "description": "Essa rota mostra uma lista com todos os contatos cadastrados.",
+                "tags": [
+                    "Contatos"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Token inválido"
+                    },
+                    "200": {
+                        "description": "Retornado a lista de contatos cadastrados."
+                    }
+                }
+            }
+        },
+        "/contatos/{id}": {
+            "put": {
+                "summary": "Modifica o contato cadastrado",
+                "description": "Essa rota fará o mudança dos dados de um contato a partir do seu ID.",
+                "tags": [
+                    "Contatos"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do contato para a busca",
+                        "required": true
+                    }
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Contact"
+                            },
+                            "examples": {
+                                "contato": {
+                                    "value": {
+                                        "nome": "Outro nome",
+                                        "email": "outroEmail@email.com",
+                                        "telefone": "(12) 1111-2222"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Algum dos campos obrigatórios não foi preenchido."
+                    },
+                    "401": {
+                        "description": "Token inválido"
+                    },
+                    "404": {
+                        "description": "ID informado não corresponde a nenhum contato cadastrado para o usuário."
+                    },
+                    "406": {
+                        "description": "Algum dos campos informados é inválido para ser alterado."
+                    },
+                    "200": {
+                        "description": "Contato modificado."
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Deleta o contato informado",
+                "description": "Essa rota deletará um contato a partir do seu ID.",
+                "tags": [
+                    "Contatos"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do contato para a busca",
+                        "required": true
+                    }
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "Token inválido"
+                    },
+                    "404": {
+                        "description": "ID informado não corresponde a nenhum contato cadastrado para o usuário."
+                    },
+                    "200": {
+                        "description": "Contato deletado."
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "nome": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "senha": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserLogin": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "senha": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Contact": {
+                "type": "object",
+                "properties": {
+                    "nome": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "telefone": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
