@@ -106,6 +106,14 @@ describe('Test of all endpoints', () => {
         })
 
 
+        it('Should return a message that user already registered', async () => {
+            const signUpDuplicated = await request(app)
+                .post('/usuario')
+                .send({ nome: userData.nome, email: userData.email, senha: userData.senha });
+            expect(signUpDuplicated.body.message).toBe('Usuário já cadastrado no sistema!');
+        })
+
+
     })
 
 

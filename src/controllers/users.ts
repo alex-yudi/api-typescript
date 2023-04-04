@@ -49,7 +49,10 @@ export const signUpUser = async (req: Request, res: Response) => {
 
         return res.status(201).json(userCreated)
     } catch (error: any) {
-        return res.status(400).json(error.message)
+        if (error.constraint === "usuarios_email_key") {
+            return res.status(409).json({ message: "Usuário já cadastrado no sistema!" })
+        }
+        return res.status(400).json(error)
     }
 }
 
