@@ -99,3 +99,33 @@ export const updateContact = async (req: RequestUser, res: Response) => {
         }
     }
 }
+
+export const deleteContact = async (req: RequestUser, res: Response) => {
+    if (req.user) {
+        const { userLoggedId } = req.user
+        const { id: idContact } = req.params
+        const paramsToSearch = {
+            id: idContact,
+            id_usuario: userLoggedId,
+        }
+
+        try {
+            const contactToBeDeleted = await knex('contatos')
+                .select('nome', 'email', 'telefone')
+                .where(paramsToSearch)
+                .first()
+
+            if (!contactToBeDeleted) {
+                return res.status(404).json({ message: "Contato não localizado!" })
+            }
+
+            await knex('contatos')
+                .delete()
+                .where(paramsToSearch)
+
+            return res.status(200).json({ message: 'Contato deletado!' })
+        } catch (error: any) {
+            return res.status(500).json({ message: "Erro interno do servidor." })
+        }
+    }
+}

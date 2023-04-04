@@ -237,7 +237,7 @@ describe('Test of all endpoints', () => {
         })
     })
 
-    describe('Test of modificate a contact registered', () => {
+    describe('Test of update a contact registered', () => {
         it('Should return a error of contact not found', async () => {
             const idInvalidContact = 2;
             const contactNotFound = await request(app)
@@ -276,6 +276,26 @@ describe('Test of all endpoints', () => {
 
             expect(newContactName.body.nome).toBe('NovoNome')
         })
+    })
+
+    describe('Test of delete a contact registered', () => {
+        it('Should return a error of contact not found', async () => {
+            const idInvalidContact = 2;
+            const contactNotFound = await request(app)
+                .delete(`/contatos/${idInvalidContact}`)
+                .auth(userData.token, { type: 'bearer' })
+
+            expect(contactNotFound.body.message).toBe('Contato não localizado!')
+        })
+
+        it('Should return a confirmation of the contact deleted', async () => {
+            const idContactValid = 1
+            const deletedContact = await request(app)
+                .delete(`/contatos/${idContactValid}`)
+                .auth(userData.token, { type: 'bearer' })
+            expect(deletedContact.body.message).toBe('Contato deletado!')
+        })
+
     })
 
 
