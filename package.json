@@ -2,10 +2,11 @@
   "name": "api-typescript",
   "version": "1.0.0",
   "description": "Projeto de API desenvolvido em Typescript - Uso de Jest para testes - Uso de Express para servidor - Uso do JWT e Bcrypt para criptografia e autenticação - Uso do Knex para integração com Banco de dados SQL",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
   "scripts": {
     "dev": "nodemon ./src/index.ts",
-    "test": "NODE_ENV=test& jest --runInBand"
+    "test": "NODE_ENV=test& jest --runInBand",
+    "start": "tsc --init & node ./dist/index.js"
   },
   "keywords": [],
   "author": "",
