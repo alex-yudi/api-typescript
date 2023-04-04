@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon ./src/index.ts",
     "test": "NODE_ENV=test& jest --runInBand",
-    "start": "tsc & node ./dist/index.js"
+    "start": "tsc"
   },
   "keywords": [],
   "author": "",
