@@ -257,6 +257,16 @@ describe('Test of all endpoints', () => {
             expect(missingFields.body.message).toBe('É necessário informar algum campo para a alteração!')
         })
 
+        it('Should return a error of invalid fields to modificate', async () => {
+            const idContactValid = 1;
+            const invalidBody = { id: 3 }
+            const missingFields = await request(app)
+                .put(`/contatos/${idContactValid}`)
+                .auth(userData.token, { type: 'bearer' })
+                .send(invalidBody)
+            expect(missingFields.body.message).toBe('Um ou todos os campos informados são inválidos!')
+        })
+
         it('Should return a message with the name of contact modified', async () => {
             const idContactValid = 1;
             const newContactName = await request(app)

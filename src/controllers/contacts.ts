@@ -40,12 +40,60 @@ export const registerContact = async (req: RequestUser, res: Response) => {
 
 export const getListOfContacts = async (req: RequestUser, res: Response) => {
     if (req.user) {
-
         const { userLoggedId } = req.user
         try {
             const listOfcontacts = await knex('contatos').where({ id_usuario: userLoggedId })
 
             return res.status(200).json({ list: [...listOfcontacts] })
+        } catch (error: any) {
+            return res.status(400).json({ message: error.message })
+        }
+    }
+}
+
+export const updateContact = async (req: RequestUser, res: Response) => {
+    if (req.user) {
+        const { userLoggedId } = req.user
+        const { id: idContact } = req.params
+        const contactDataModified = req.body
+        const paramsToSearch = {
+            id: idContact,
+            id_usuario: userLoggedId,
+        }
+
+        try {
+            const contactToBeModified = await knex('contatos')
+                .select('nome', 'email', 'telefone')
+                .where(paramsToSearch)
+                .first()
+
+            if (!contactToBeModified) {
+                return res.status(404).json({ message: "Contato não localizado!" })
+            }
+
+            if (Object.keys(contactDataModified).length === 0) {
+                return res.status(400).json({ message: 'É necessário informar algum campo para a alteração!' })
+            }
+
+            const isFieldValid = Object.keys(contactDataModified).every((field) => {
+                return field === 'nome' || field === 'email' || field === 'telefone'
+            })
+
+            if (!isFieldValid) {
+                return res.status(400).json({ message: 'Um ou todos os campos informados são inválidos!' })
+            }
+
+            const dataToBeSend = {
+                ...contactToBeModified,
+                ...contactDataModified
+            }
+
+            const [contactModified] = await knex('contatos')
+                .update(dataToBeSend)
+                .where(paramsToSearch)
+                .returning(['id', 'nome', 'email', 'telefone'])
+
+            return res.status(200).json(contactModified)
         } catch (error: any) {
             return res.status(400).json({ message: error.message })
         }
